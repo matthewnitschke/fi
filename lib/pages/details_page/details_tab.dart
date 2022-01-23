@@ -5,7 +5,6 @@ import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/utils/redux_utils.dart';
 import 'package:fi/widgets/edit_bucket_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DetailsTab extends StatelessWidget {

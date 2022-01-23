@@ -37,6 +37,12 @@ void main() {
           ..name = 'Apple - Store'
           ..amount = 50
           ..date = DateTime.now(),
+        ),
+        'b': Transaction((b) => b
+          ..merchant = 'Wallmart'
+          ..name = 'Walmart - Literal Poop'
+          ..amount = 200
+          ..date = DateTime.now(),
         )
       }),
       ignoredTransactions: BuiltSet<String>(),

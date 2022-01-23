@@ -23,6 +23,7 @@ AppState _onLoadState(AppState state, LoadStateAction action) {
     ..borrows = action.borrows.toBuilder()
     ..transactions = action.transactions.toBuilder()
     ..ignoredTransactions = action.ignoredTransactions.toBuilder()
+    ..status = AppStatus.success
   );
 }
 
