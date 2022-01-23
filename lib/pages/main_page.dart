@@ -1,6 +1,10 @@
 
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:fi/client.dart';
+import 'package:fi/pages/login_page.dart';
 import 'package:fi/pages/transactions_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/redux/selectors.dart';
@@ -51,7 +55,34 @@ class MainPage extends StatelessWidget {
         )
         ,
       ),
-      body: const ItemsList(),
+      body: storeConnector<DateTime>(
+        converter: (state) => state.selectedMonth,
+        builder: (selectedMonth) {
+          return FutureBuilder(
+            future: FiClient.getBudget(selectedMonth),
+            builder: (ctx, snap) {
+              if (snap.hasError) {
+                if (snap.error is NotAuthenticatedException) {
+                  scheduleMicrotask(() {
+                    Navigator.pushReplacement(
+                      ctx, 
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    );
+                  });
+                }
+
+                return const Text('There was an error');
+              }
+
+              if (snap.connectionState == ConnectionState.done) {
+                return const ItemsList();
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }
+          );
+        },
+      ),
       floatingActionButton: const RootAddButton(),
     );
   }
@@ -63,52 +94,41 @@ class ItemsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return dispatchConnector((dispatch) {
-      return storeConnector<AppStatus>(
-        converter: (state) => state.status,
-        builder: (status) {
-          return storeConnector<BuiltList<String>>(
-            converter: (state) => state.rootItemIds, 
-            builder: (rootItemIds) {
-              if (status == AppStatus.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (status == AppStatus.errored) {
-                return const Center(child: Text('There was a failure'));
-              }
-
-              if (rootItemIds.isEmpty) {
-                return const Center(child: Text('No Content'));
-              }
-        
-              return ReorderableListView.builder(
-                itemCount: rootItemIds.length,
-                itemBuilder: (context, index) {
-                  final itemId = rootItemIds[index];
-                  return StoreConnector<AppState, Item?>(
-                    key: Key(itemId),
-                    converter: (store) => store.state.items[itemId],
-                    builder: (ctx, item) {
-                      if (item is Bucket) {
-                        return BucketView(
-                          wrapWithCard: true,
-                          bucketId: itemId,
-                        );
-                      } else {
-                        return BucketGroupView(
-                          key: Key(itemId),
-                          bucketGroupId: itemId,
-                        );
-                      }
-                    }
-                  );
-                },
-                onReorder: (start, current) {
-                  var delta = current - start;
-                  delta = current > start ? delta-1 : delta;
-                  final itemId = rootItemIds[start];
-        
-                  dispatch(ReorderItemAction(itemId, delta));
-                },
+      return storeConnector<BuiltList<String>>(
+        converter: (state) => state.rootItemIds, 
+        builder: (rootItemIds) {
+          if (rootItemIds.isEmpty) {
+            return const Center(child: Text('No Content'));
+          }
+    
+          return ReorderableListView.builder(
+            itemCount: rootItemIds.length,
+            itemBuilder: (context, index) {
+              final itemId = rootItemIds[index];
+              return StoreConnector<AppState, Item?>(
+                key: Key(itemId),
+                converter: (store) => store.state.items[itemId],
+                builder: (ctx, item) {
+                  if (item is Bucket) {
+                    return BucketView(
+                      wrapWithCard: true,
+                      bucketId: itemId,
+                    );
+                  } else {
+                    return BucketGroupView(
+                      key: Key(itemId),
+                      bucketGroupId: itemId,
+                    );
+                  }
+                }
               );
+            },
+            onReorder: (start, current) {
+              var delta = current - start;
+              delta = current > start ? delta-1 : delta;
+              final itemId = rootItemIds[start];
+    
+              dispatch(ReorderItemAction(itemId, delta));
             },
           );
         },

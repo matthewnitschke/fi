@@ -21,6 +21,8 @@ dependencies:
   flutter_form_builder: ^7.0.0
   flutter_redux: ^0.8.2
   badges: ^2.0.2
+  http: ^0.13.4
+  memoize: ^3.0.0
 
 dev_dependencies:
   flutter_test:

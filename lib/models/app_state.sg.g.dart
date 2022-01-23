@@ -18,15 +18,6 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
   Iterable<Object?> serialize(Serializers serializers, AppState object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
-      'status',
-      serializers.serialize(object.status,
-          specifiedType: const FullType(AppStatus)),
-      'selectedMonth',
-      serializers.serialize(object.selectedMonth,
-          specifiedType: const FullType(DateTime)),
-      'isDraggingTransaction',
-      serializers.serialize(object.isDraggingTransaction,
-          specifiedType: const FullType(bool)),
       'items',
       serializers.serialize(object.items,
           specifiedType: const FullType(
@@ -35,10 +26,6 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
       serializers.serialize(object.rootItemIds,
           specifiedType:
               const FullType(BuiltList, const [const FullType(String)])),
-      'transactions',
-      serializers.serialize(object.transactions,
-          specifiedType: const FullType(BuiltMap,
-              const [const FullType(String), const FullType(Transaction)])),
       'ignoredTransactions',
       serializers.serialize(object.ignoredTransactions,
           specifiedType:
@@ -48,14 +35,7 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
           specifiedType: const FullType(BuiltMap,
               const [const FullType(String), const FullType(Borrow)])),
     ];
-    Object? value;
-    value = object.selectedItemId;
-    if (value != null) {
-      result
-        ..add('selectedItemId')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
+
     return result;
   }
 
@@ -70,22 +50,6 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
-        case 'status':
-          result.status = serializers.deserialize(value,
-              specifiedType: const FullType(AppStatus)) as AppStatus;
-          break;
-        case 'selectedMonth':
-          result.selectedMonth = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
-          break;
-        case 'isDraggingTransaction':
-          result.isDraggingTransaction = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
-          break;
-        case 'selectedItemId':
-          result.selectedItemId = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
         case 'items':
           result.items.replace(serializers.deserialize(value,
               specifiedType: const FullType(BuiltMap,
@@ -96,13 +60,6 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(String)]))!
               as BuiltList<Object?>);
-          break;
-        case 'transactions':
-          result.transactions.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltMap, const [
-                const FullType(String),
-                const FullType(Transaction)
-              ]))!);
           break;
         case 'ignoredTransactions':
           result.ignoredTransactions.replace(serializers.deserialize(value,
@@ -124,8 +81,6 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
 
 class _$AppState extends AppState {
   @override
-  final AppStatus status;
-  @override
   final DateTime selectedMonth;
   @override
   final bool isDraggingTransaction;
@@ -146,8 +101,7 @@ class _$AppState extends AppState {
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._(
-      {required this.status,
-      required this.selectedMonth,
+      {required this.selectedMonth,
       required this.isDraggingTransaction,
       this.selectedItemId,
       required this.items,
@@ -156,7 +110,6 @@ class _$AppState extends AppState {
       required this.ignoredTransactions,
       required this.borrows})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(status, 'AppState', 'status');
     BuiltValueNullFieldError.checkNotNull(
         selectedMonth, 'AppState', 'selectedMonth');
     BuiltValueNullFieldError.checkNotNull(
@@ -182,7 +135,6 @@ class _$AppState extends AppState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is AppState &&
-        status == other.status &&
         selectedMonth == other.selectedMonth &&
         isDraggingTransaction == other.isDraggingTransaction &&
         selectedItemId == other.selectedItemId &&
@@ -201,9 +153,7 @@ class _$AppState extends AppState {
                 $jc(
                     $jc(
                         $jc(
-                            $jc(
-                                $jc($jc(0, status.hashCode),
-                                    selectedMonth.hashCode),
+                            $jc($jc(0, selectedMonth.hashCode),
                                 isDraggingTransaction.hashCode),
                             selectedItemId.hashCode),
                         items.hashCode),
@@ -216,7 +166,6 @@ class _$AppState extends AppState {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
-          ..add('status', status)
           ..add('selectedMonth', selectedMonth)
           ..add('isDraggingTransaction', isDraggingTransaction)
           ..add('selectedItemId', selectedItemId)
@@ -231,10 +180,6 @@ class _$AppState extends AppState {
 
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState? _$v;
-
-  AppStatus? _status;
-  AppStatus? get status => _$this._status;
-  set status(AppStatus? status) => _$this._status = status;
 
   DateTime? _selectedMonth;
   DateTime? get selectedMonth => _$this._selectedMonth;
@@ -286,7 +231,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   AppStateBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
-      _status = $v.status;
       _selectedMonth = $v.selectedMonth;
       _isDraggingTransaction = $v.isDraggingTransaction;
       _selectedItemId = $v.selectedItemId;
@@ -317,8 +261,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     try {
       _$result = _$v ??
           new _$AppState._(
-              status: BuiltValueNullFieldError.checkNotNull(
-                  status, 'AppState', 'status'),
               selectedMonth: BuiltValueNullFieldError.checkNotNull(
                   selectedMonth, 'AppState', 'selectedMonth'),
               isDraggingTransaction: BuiltValueNullFieldError.checkNotNull(

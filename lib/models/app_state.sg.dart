@@ -7,21 +7,21 @@ import 'package:fi/models/transaction.sg.dart';
 
 part 'app_state.sg.g.dart';
 
-enum AppStatus { loading, errored, success }
-
 abstract class AppState implements Built<AppState, AppStateBuilder> {
-  AppStatus get status;
-
+  @BuiltValueField(serialize: false)
   DateTime get selectedMonth;
 
+  @BuiltValueField(serialize: false)
   bool get isDraggingTransaction;
 
+  @BuiltValueField(serialize: false)
   String? get selectedItemId;
 
   BuiltMap<String, Item> get items;
   
   BuiltList<String> get rootItemIds;
 
+  @BuiltValueField(serialize: false)
   BuiltMap<String, Transaction> get transactions;
 
   BuiltSet<String> get ignoredTransactions;
