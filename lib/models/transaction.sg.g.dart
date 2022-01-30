@@ -18,6 +18,8 @@ class _$TransactionSerializer implements StructuredSerializer<Transaction> {
   Iterable<Object?> serialize(Serializers serializers, Transaction object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
       'amount',
       serializers.serialize(object.amount,
           specifiedType: const FullType(double)),
@@ -49,6 +51,10 @@ class _$TransactionSerializer implements StructuredSerializer<Transaction> {
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'amount':
           result.amount = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
@@ -74,6 +80,8 @@ class _$TransactionSerializer implements StructuredSerializer<Transaction> {
 
 class _$Transaction extends Transaction {
   @override
+  final String id;
+  @override
   final double amount;
   @override
   final String? merchant;
@@ -86,11 +94,13 @@ class _$Transaction extends Transaction {
       (new TransactionBuilder()..update(updates)).build();
 
   _$Transaction._(
-      {required this.amount,
+      {required this.id,
+      required this.amount,
       this.merchant,
       required this.name,
       required this.date})
       : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'Transaction', 'id');
     BuiltValueNullFieldError.checkNotNull(amount, 'Transaction', 'amount');
     BuiltValueNullFieldError.checkNotNull(name, 'Transaction', 'name');
     BuiltValueNullFieldError.checkNotNull(date, 'Transaction', 'date');
@@ -107,6 +117,7 @@ class _$Transaction extends Transaction {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Transaction &&
+        id == other.id &&
         amount == other.amount &&
         merchant == other.merchant &&
         name == other.name &&
@@ -116,13 +127,15 @@ class _$Transaction extends Transaction {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, amount.hashCode), merchant.hashCode), name.hashCode),
+        $jc($jc($jc($jc(0, id.hashCode), amount.hashCode), merchant.hashCode),
+            name.hashCode),
         date.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Transaction')
+          ..add('id', id)
           ..add('amount', amount)
           ..add('merchant', merchant)
           ..add('name', name)
@@ -133,6 +146,10 @@ class _$Transaction extends Transaction {
 
 class TransactionBuilder implements Builder<Transaction, TransactionBuilder> {
   _$Transaction? _$v;
+
+  String? _id;
+  String? get id => _$this._id;
+  set id(String? id) => _$this._id = id;
 
   double? _amount;
   double? get amount => _$this._amount;
@@ -155,6 +172,7 @@ class TransactionBuilder implements Builder<Transaction, TransactionBuilder> {
   TransactionBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _id = $v.id;
       _amount = $v.amount;
       _merchant = $v.merchant;
       _name = $v.name;
@@ -179,6 +197,7 @@ class TransactionBuilder implements Builder<Transaction, TransactionBuilder> {
   _$Transaction build() {
     final _$result = _$v ??
         new _$Transaction._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'Transaction', 'id'),
             amount: BuiltValueNullFieldError.checkNotNull(
                 amount, 'Transaction', 'amount'),
             merchant: merchant,

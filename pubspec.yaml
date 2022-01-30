@@ -23,6 +23,8 @@ dependencies:
   badges: ^2.0.2
   http: ^0.13.4
   memoize: ^3.0.0
+  google_fonts: ^2.2.0
+  group_list_view: ^1.1.1
 
 dev_dependencies:
   flutter_test:

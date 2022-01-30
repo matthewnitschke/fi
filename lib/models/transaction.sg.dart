@@ -4,6 +4,8 @@ import 'package:built_value/serializer.dart';
 part 'transaction.sg.g.dart';
 
 abstract class Transaction implements Built<Transaction, TransactionBuilder> {
+  String get id;
+  
   double get amount;
 
   String? get merchant;

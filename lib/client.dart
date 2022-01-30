@@ -6,6 +6,7 @@ import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:memoize/memoize.dart';
@@ -15,8 +16,11 @@ final _dateFormat = DateFormat('y-MM-dd');
 class FiClient {
   static Uri _getUrl(String suffix) {
     if (kDebugMode) {
-      return Uri.parse('http://localhost:8080$suffix');
-      // return Uri.parse('http://192.168.1.179:8080$suffix');
+      if (Uri.base.toString().contains('localhost')) {
+        return Uri.parse('http://localhost:8080$suffix');
+      } else {
+        return Uri.parse('http://192.168.1.42:8080$suffix');
+      }
     }
 
     return Uri.parse('http://somewhere$suffix');
@@ -29,9 +33,12 @@ class FiClient {
   }
 
   static Future<bool> isAuthenticated() async {
-    final resp = await post(_getUrl('/transactions'));
-
-    return resp.statusCode != 401;
+    try {
+      final resp = await post(_getUrl('/transactions'));
+      return resp.statusCode != 401;
+    } catch(_) {
+      return false;
+    }
   }
 
   static Future<void> authenticate(String email, String password) async {
@@ -88,6 +95,7 @@ class FiClient {
           return MapEntry(
             encodedTransaction['_id'] as String,
             Transaction((b) => b
+              ..id = encodedTransaction['_id'] as String
               ..amount = (encodedTransaction['amount'] as num).toDouble() * -1
               ..merchant = encodedTransaction['merchantName'] ?? encodedTransaction['name'] as String
               ..name = encodedTransaction['name']
@@ -100,32 +108,40 @@ class FiClient {
   }
 
   static Map<String, String> headers = {};
+  static final http.Client _clientRaw = http.Client();
+  static http.Client get _client {
+    if (_clientRaw is BrowserClient) {
+      (_clientRaw as BrowserClient).withCredentials = true;
+    }
 
+    return _clientRaw;
+  }
+  
   static Future<http.Response> get(Uri uri) async {
-    final response = await http.get(uri, headers: headers);
-    updateCookie(response);
+    final response = await _client.get(uri, headers: headers);
+    // updateCookie(response);
     return response;
   }
 
   static Future<http.Response> post(Uri uri, { Map<String, Object> body = const {} }) async {
-    final response = await http.post(uri, body: body, headers: headers);
-    updateCookie(response);
+    final response = await _client.post(uri, body: body, headers: headers);
+    // updateCookie(response);
     return response;
   }
 
   static Future<http.Response> delete(Uri uri) async {
-    final response = await http.delete(uri, headers: headers);
-    updateCookie(response);
+    final response = await _client.delete(uri, headers: headers);
+    // updateCookie(response);
     return response;
   }
 
-  static void updateCookie(http.Response response) {
-    String? rawCookie = response.headers['set-cookie'];
-    if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-    }
-  }
+  // static void updateCookie(http.Response response) {
+  //   String? rawCookie = response.headers['set-cookie'];
+  //   if (rawCookie != null) {
+  //     int index = rawCookie.indexOf(';');
+  //     headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+  //   }
+  // }
 }
 
 class InternalServerException implements Exception {

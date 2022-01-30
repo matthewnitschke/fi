@@ -73,7 +73,11 @@ List<String> unallocatedTransactionsSelector(AppState state) {
     .expand((transactions) => transactions)
     .toSet();
 
-  return state.transactions.keys.toSet().difference(allocatedTransactions).toList();
+
+  return state.transactions.keys.toSet()
+    .difference(allocatedTransactions)
+    .difference(state.ignoredTransactions.toSet())
+    .toList();
 }
 
 // List<Bucket> bucketTypeSelector<T extends BucketValue>(AppState state) {

@@ -21,38 +21,20 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(
-          transaction.amount.formatCurrency(2),
-          style: TextStyle(color: transaction.amount > 0 ? Colors.green : null),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            transaction.amount.formatCurrency(2),
+            style: TextStyle(
+              color: transaction.amount > 0 ? Colors.green : null,
+              fontWeight: FontWeight.bold
+            ),
+          ),
         ),
         tileColor: transaction.amount > 0 ? Colors.green[50] : null,
         subtitle: Text(transaction.merchant ?? transaction.name),
         onTap: onTap,
-        trailing: Text(
-          '${transaction.date.day}${_getDayOfMonthSuffix(transaction.date.day)}',
-          style: const TextStyle(
-            fontSize: 12,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
       )
     );
   }
-
-  String _getDayOfMonthSuffix(int dayNum) {
-    if(!(dayNum >= 1 && dayNum <= 31)) {
-      throw Exception('Invalid day of month');
-    }
-
-    if(dayNum >= 11 && dayNum <= 13) {
-      return 'th';
-    }
-
-    switch(dayNum % 10) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
-    }
-}
 }

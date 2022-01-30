@@ -6,6 +6,7 @@ import 'package:fi/redux/root/root.reducer.dart';
 import 'package:fi/redux/settings_save.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:redux/redux.dart';
 
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Fi',
         theme: ThemeData(
+          textTheme: GoogleFonts.robotoTextTheme(),
           primarySwatch: Colors.blue,
         ),
         home: const LoginPage(),
