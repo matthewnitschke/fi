@@ -4,9 +4,10 @@ import 'dart:async';
 import 'package:badges/badges.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:fi/client.dart';
-import 'package:fi/pages/login_page.dart';
+import 'package:fi/models/transaction.sg.dart';
 import 'package:fi/pages/transactions_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
+import 'package:fi/redux/root/root.actions.dart';
 import 'package:fi/redux/selectors.dart';
 import 'package:fi/utils/redux_utils.dart';
 import 'package:fi/widgets/bucket_group_view.dart';
@@ -19,6 +20,8 @@ import 'package:fi/widgets/root_add_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fi/utils/colors.dart';
+
+import 'package:redux/redux.dart';
 
 
 class MainPage extends StatelessWidget {
@@ -55,36 +58,52 @@ class MainPage extends StatelessWidget {
         )
         ,
       ),
-      body: storeConnector<DateTime>(
-        converter: (state) => state.selectedMonth,
-        builder: (selectedMonth) {
-          return FutureBuilder(
-            future: FiClient.getBudget(selectedMonth),
-            builder: (ctx, snap) {
-              if (snap.hasError) {
-                if (snap.error is NotAuthenticatedException) {
-                  scheduleMicrotask(() {
-                    Navigator.pushReplacement(
-                      ctx, 
-                      MaterialPageRoute(builder: (_) => const LoginPage()),
-                    );
-                  });
-                }
-
-                return const Text('There was an error');
-              }
-
-              if (snap.connectionState == ConnectionState.done) {
-                return const ItemsList();
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }
-          );
+      body: StoreConnector<AppState, DateTime>(
+        converter: (store) => store.state.selectedMonth,
+        onInit: (store) => _handleInitBudget(store),
+        builder: (context, selectedMonth) {
+          return const ItemsList();
         },
       ),
       floatingActionButton: const RootAddButton(),
     );
+  }
+
+  Future<void> _handleInitBudget(Store<AppState> store) async {
+    late BuiltMap<String, Transaction> transactions;
+    late AppState appState;
+    
+    await Future.wait([
+      FiClient.getTransactions(
+        store.state.selectedMonth,
+      ).then((resp) => transactions = resp),
+      FiClient.getBudget(
+        store.state.selectedMonth,
+      ).then((resp) => appState = resp)
+    ]);
+
+    // on the off chance that transactionIds get borked, dont add phantom ones within items
+    final filteredItems = appState.items.map((itemId, item) {
+      if (item is Bucket) {
+        return MapEntry(
+          itemId, item.rebuild((b) => b
+            ..transactions = item.transactions
+              .where((transactionId) {
+                return transactions.keys.contains(transactionId);
+              }).toBuiltList().toBuilder()
+          ),
+        );
+      }
+      return MapEntry(itemId, item);
+    });
+
+    store.dispatch(LoadStateAction(
+      items: filteredItems,
+      rootItemIds: appState.rootItemIds,
+      borrows: appState.borrows,
+      transactions: transactions,
+      ignoredTransactions: appState.ignoredTransactions
+    ));
   }
 }
 

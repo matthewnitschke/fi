@@ -1,5 +1,5 @@
 import 'package:fi/models/app_state.sg.dart';
-import 'package:fi/pages/main_page.dart';
+import 'package:fi/pages/login_page.dart';
 import 'package:fi/redux/borrows/borrows.reducer.dart';
 import 'package:fi/redux/items/items.reducer.dart';
 import 'package:fi/redux/root/root.reducer.dart';
@@ -22,22 +22,6 @@ void main() {
     initialState: AppState(),
     middleware: [settingsSaveMiddleware()]
   );
-
-  // FiClient.getBudget(store.state.selectedMonth)
-  //     .then((appState) {
-  //       store.dispatch(LoadStateAction(
-  //         items: appState.items,
-  //         rootItemIds: appState.rootItemIds, 
-  //         borrows: appState.borrows, 
-  //         transactions: appState.transactions, 
-  //         ignoredTransactions: appState.ignoredTransactions,
-  //       ));
-  //     })
-  //     .catchError((err) {
-  //       if (err is NotAuthenticatedException) {
-  //         navigatorKey.currentState?.pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
-  //       }
-  //     });
 
   // debugPaintSizeEnabled=true;
   runApp(MyApp(
@@ -63,7 +47,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const MainPage(),
+        home: const LoginPage(),
         navigatorKey: navigatorKey,
       )
     );

@@ -3,6 +3,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/bucket.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
 import 'package:fi/utils/redux_utils.dart';
+import 'package:fi/utils/transaction_card.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsTab extends StatelessWidget {
@@ -25,11 +26,8 @@ class TransactionsTab extends StatelessWidget {
             itemCount: transactions.length,
             itemBuilder: (ctx, index) {
               final transaction = transactions[index];
-              return Card(
-                child: ListTile(
-                  title: Text('\$${transaction.amount}'),
-                  subtitle: Text(transaction.name),
-                ),
+              return TransactionCard(
+                transaction: transaction,
               );
             },
           );

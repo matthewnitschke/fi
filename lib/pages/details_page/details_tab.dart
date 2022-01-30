@@ -1,6 +1,7 @@
 
 import 'package:fi/models/bucket.sg.dart';
 import 'package:fi/models/bucket_value.sg.dart';
+import 'package:fi/pages/main_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/utils/redux_utils.dart';
 import 'package:fi/widgets/edit_bucket_page.dart';
@@ -60,6 +61,15 @@ class DetailsTab extends StatelessWidget {
               },
             ),
             BucketValueEditor(bucket, bucketId),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: OutlinedButton(
+                onPressed: () {
+                  dispatch(DeleteItemAction(bucketId));
+                },
+                child: const Text('Delete')
+              )
+            )
           ],
         )
       );

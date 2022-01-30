@@ -5,6 +5,7 @@ import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/redux/selectors.dart';
 import 'package:fi/utils/colors.dart';
 import 'package:fi/utils/redux_utils.dart';
+import 'package:fi/utils/transaction_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -31,12 +32,10 @@ class TransactionsPage extends StatelessWidget {
               itemCount: transactions.length,
               itemBuilder: (ctx, index) {
                 final transaction = transactions[index];
-                return Card(
-                  child: ListTile(
-                    subtitle: Text(transaction.value.name),
-                    title: Text('\$${transaction.value.amount.toStringAsFixed(2)}'),
-                    onTap: () => _showAssignmentView(context, transaction.key),
-                  )
+
+                return TransactionCard(
+                  transaction: transaction.value,
+                  onTap: () => _showAssignmentView(context, transaction.key),
                 );
               }
             )
@@ -98,6 +97,7 @@ class TransactionAssignmentModalState extends State<TransactionAssignmentModal> 
                     onPressed: () {
                       final itemId = _formKey.currentState?.fields['item']?.value as String;
                       dispatch(AllocateTransactionAction(itemId, transactionId));
+                      Navigator.pop(context);
                     },
                     child: const Text('Assign Transaction')
                   )

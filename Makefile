@@ -4,4 +4,4 @@ gen:
 
 # serves application as a web-server so it can be accessed via mobile device
 webserver:
-	flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0
+	flutter run -d web-server --web-port 8888 --web-hostname 0.0.0.0

@@ -11,8 +11,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  var _isCheckingAuthState = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  String? _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+
+    FiClient.isAuthenticated().then((isAuthed) {
+      if (isAuthed) {
+        _navigateToMainPage();
+      } else {
+        setState(() {
+          _isCheckingAuthState = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,33 +39,49 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(title: const Text('Fi')),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
-          child: Column(
-            children: [
-              const Text('Login', style: TextStyle(fontSize: 25)),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Username'),
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: 'Password'),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: OutlinedButton(
-                  onPressed: () {
-                    FiClient.authenticate(emailController.text, passwordController.text)
-                      .then((_) {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainPage()));
-                      });
-                  },
-                  child: const Text('Submit')
+          child: _isCheckingAuthState 
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+              children: [
+                const Text('Login', style: TextStyle(fontSize: 25)),
+                TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Username'),
                 ),
-              )
-            ],
-          ),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                ),
+                if (_errorText != null) Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(_errorText!, style: const TextStyle(color: Colors.red),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: OutlinedButton(
+                    onPressed: _authenticate,
+                    child: const Text('Submit')
+                  ),
+                )
+              ],
+            ),
         )
     );
+  }
+
+  Future<void> _authenticate() async {
+    try {
+      await FiClient.authenticate(_emailController.text, _passwordController.text);
+      _navigateToMainPage();
+    } on InternalServerException catch(e) {
+      setState(() => _errorText = e.message);
+    } catch(e) {
+      setState(() => _errorText = 'Unknown Error');
+    }
+  }
+
+  void _navigateToMainPage() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainPage()));
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:fi/client.dart';
@@ -6,6 +7,7 @@ import 'package:fi/models/serializers.sg.dart';
 
 import 'package:redux/redux.dart';
 
+Timer? debouncer;
 
 Middleware<AppState> settingsSaveMiddleware() => (
   Store<AppState> store, 
@@ -19,8 +21,11 @@ Middleware<AppState> settingsSaveMiddleware() => (
   final after = store.state;
 
   if (_haveSettingsChanged(before, after)) {
-    final serializedStore = json.encode(serializers.serialize(store.state));
-    FiClient.updateBudget(store.state.selectedMonth, serializedStore);
+    debouncer?.cancel();
+    debouncer = Timer(const Duration(seconds: 2), () {
+      final serializedStore = json.encode(serializers.serialize(store.state));
+      FiClient.updateBudget(store.state.selectedMonth, serializedStore);
+    });
   }
 };
 
