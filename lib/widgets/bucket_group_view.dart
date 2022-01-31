@@ -11,10 +11,12 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class BucketGroupView extends StatelessWidget {
   final String bucketGroupId;
+  final Function(String) onBucketTap;
 
   const BucketGroupView({
     Key? key,
     required this.bucketGroupId,
+    required this.onBucketTap,
   }) : super(key: key);
 
   @override
@@ -45,7 +47,10 @@ class BucketGroupView extends StatelessWidget {
                     ),
                     ...bucketGroup.itemIds.map((itemId) => Padding(
                       padding: const EdgeInsets.only(bottom: 15),
-                      child: BucketView(bucketId: itemId)
+                      child: BucketView(
+                        bucketId: itemId,
+                        onTap: () => onBucketTap(itemId),
+                      )
                     )),
                     Row(
                       children: [

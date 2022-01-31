@@ -1,6 +1,5 @@
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/bucket.sg.dart';
-import 'package:fi/pages/details_page/details_page.dart';
 import 'package:fi/redux/selectors.dart';
 import 'package:fi/utils/redux_utils.dart';
 import 'package:fi/widgets/utils/root_card.dart';
@@ -8,15 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class BucketView extends StatelessWidget {
-
   final String bucketId;
-
   final bool wrapWithCard;
+  final Function() onTap;
 
   const BucketView({ 
     Key? key, 
     required this.bucketId,
-    this.wrapWithCard = false
+    required this.onTap,
+    this.wrapWithCard = false,
+    
   }) : super(key: key);
 
   @override
@@ -26,13 +26,13 @@ class BucketView extends StatelessWidget {
       builder: (ctx, bucket) {
         if (wrapWithCard) {
           return RootCard(
-            onTap: _handleTap(context),
+            onTap: onTap,
             child: _buildBucketContent(bucket),
           );
         }
 
         return InkWell(
-          onTap: _handleTap(context),
+          onTap: onTap,
           child: _buildBucketContent(bucket)
         );
       }
@@ -73,11 +73,4 @@ class BucketView extends StatelessWidget {
       },
     );
   }
-
-  void Function() _handleTap(BuildContext context) => () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => DetailsPage(bucketId: bucketId,)),
-    );
-  };
 }

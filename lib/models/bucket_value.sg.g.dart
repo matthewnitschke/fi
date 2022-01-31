@@ -165,7 +165,14 @@ class _$TableBucketValueEntrySerializer
       serializers.serialize(object.amount,
           specifiedType: const FullType(double)),
     ];
-
+    Object? value;
+    value = object.label;
+    if (value != null) {
+      result
+        ..add('label')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -181,6 +188,10 @@ class _$TableBucketValueEntrySerializer
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
+        case 'label':
+          result.label = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
         case 'amount':
           result.amount = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
@@ -474,13 +485,15 @@ class TableBucketValueBuilder
 
 class _$TableBucketValueEntry extends TableBucketValueEntry {
   @override
+  final String? label;
+  @override
   final double amount;
 
   factory _$TableBucketValueEntry(
           [void Function(TableBucketValueEntryBuilder)? updates]) =>
       (new TableBucketValueEntryBuilder()..update(updates)).build();
 
-  _$TableBucketValueEntry._({required this.amount}) : super._() {
+  _$TableBucketValueEntry._({this.label, required this.amount}) : super._() {
     BuiltValueNullFieldError.checkNotNull(
         amount, 'TableBucketValueEntry', 'amount');
   }
@@ -497,17 +510,20 @@ class _$TableBucketValueEntry extends TableBucketValueEntry {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TableBucketValueEntry && amount == other.amount;
+    return other is TableBucketValueEntry &&
+        label == other.label &&
+        amount == other.amount;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, amount.hashCode));
+    return $jf($jc($jc(0, label.hashCode), amount.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('TableBucketValueEntry')
+          ..add('label', label)
           ..add('amount', amount))
         .toString();
   }
@@ -516,6 +532,10 @@ class _$TableBucketValueEntry extends TableBucketValueEntry {
 class TableBucketValueEntryBuilder
     implements Builder<TableBucketValueEntry, TableBucketValueEntryBuilder> {
   _$TableBucketValueEntry? _$v;
+
+  String? _label;
+  String? get label => _$this._label;
+  set label(String? label) => _$this._label = label;
 
   double? _amount;
   double? get amount => _$this._amount;
@@ -528,6 +548,7 @@ class TableBucketValueEntryBuilder
   TableBucketValueEntryBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _label = $v.label;
       _amount = $v.amount;
       _$v = null;
     }
@@ -549,6 +570,7 @@ class TableBucketValueEntryBuilder
   _$TableBucketValueEntry build() {
     final _$result = _$v ??
         new _$TableBucketValueEntry._(
+            label: label,
             amount: BuiltValueNullFieldError.checkNotNull(
                 amount, 'TableBucketValueEntry', 'amount'));
     replace(_$result);

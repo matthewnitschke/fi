@@ -55,6 +55,8 @@ abstract class TableBucketValue implements BucketValue, Built<TableBucketValue, 
 }
 
 abstract class TableBucketValueEntry implements Built<TableBucketValueEntry, TableBucketValueEntryBuilder> {
+  String? get label;
+
   double get amount;
 
   static void _initializeBuilder(TableBucketValueEntryBuilder b) => b

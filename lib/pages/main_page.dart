@@ -5,7 +5,8 @@ import 'package:badges/badges.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:fi/client.dart';
 import 'package:fi/models/transaction.sg.dart';
-import 'package:fi/pages/transactions_page.dart';
+import 'package:fi/pages/details_page/details_page.dart';
+import 'package:fi/pages/transactions_page/transactions_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/redux/root/root.actions.dart';
 import 'package:fi/redux/selectors.dart';
@@ -132,11 +133,13 @@ class ItemsList extends StatelessWidget {
                     return BucketView(
                       wrapWithCard: true,
                       bucketId: itemId,
+                      onTap: () => _handleBucketTap(context)(itemId)
                     );
                   } else {
                     return BucketGroupView(
                       key: Key(itemId),
                       bucketGroupId: itemId,
+                      onBucketTap: _handleBucketTap(context)
                     );
                   }
                 }
@@ -154,4 +157,11 @@ class ItemsList extends StatelessWidget {
       );
     });
   }
+
+  void Function(String) _handleBucketTap(BuildContext context) => (itemId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DetailsPage(bucketId: itemId)),
+    );
+  };
 }

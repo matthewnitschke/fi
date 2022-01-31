@@ -1,4 +1,5 @@
 
+import 'package:built_collection/src/list.dart';
 import 'package:fi/models/bucket.sg.dart';
 import 'package:fi/models/bucket_value.sg.dart';
 import 'package:fi/pages/main_page.dart';
@@ -116,23 +117,81 @@ class BucketValueEditor extends StatelessWidget {
       }
 
       if (value is TableBucketValue) {
-        return const Text('Not Implemented Yet');
-        // return Column(
-        //   children: value.entries.map((entry) {
-        //     return Row(
-        //       children: [
-        //         FormBuilderTextField(
-        //           name: '${entry.name}-name',
-        //           decoration: const InputDecoration(labelText: 'Label'),
-        //         ),
-        //         FormBuilderTextField(
-        //           name: '${entry.name}-value',
-        //           decoration: const InputDecoration(labelText: 'Value'),
-        //         ),
-        //       ],
-        //     );
-        //   }).toList()
-        // );
+        return Card(
+          margin: const EdgeInsets.only(top: 10),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                const Text('Table Entries', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                ...value.entries.map((entry) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: FormBuilderTextField(
+                          name: '${entry.label}-name',
+                          decoration: const InputDecoration(labelText: 'Label'),
+                          initialValue: entry.label,
+                          onChanged: (inputVal) {
+                            final newVal = value.rebuild((b) => b
+                              ..entries = value.entries.map((e) {
+                                if (e == entry) {
+                                  return e.rebuild((eb) => eb
+                                    ..label = inputVal
+                                  );
+                                }
+                                return e;
+                              }).toBuiltList().toBuilder()
+                            );
+                            dispatch(SetBucketValueAction(bucketId, newVal));
+                          }
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FormBuilderTextField(
+                          name: '${entry.label}-amount',
+                          decoration: const InputDecoration(labelText: 'Amount'),
+                          keyboardType: TextInputType.number,
+                          initialValue: entry.amount.toStringAsFixed(2),
+                          onChanged: (inputVal) {
+                            final newVal = value.rebuild((b) => b
+                              ..entries = value.entries.map((e) {
+                                if (e == entry) {
+                                  return e.rebuild((eb) => eb
+                                    ..amount = double.parse(
+                                      inputVal?.isNotEmpty == true ? inputVal! : '0'
+                                    )
+                                  );
+                                }
+                                return e;
+                              }).toBuiltList().toBuilder()
+                            );
+                            dispatch(SetBucketValueAction(bucketId, newVal));
+                          }
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      final newVal = value.rebuild((b) => b
+                        ..entries.add(TableBucketValueEntry())
+                      );
+        
+                      dispatch(SetBucketValueAction(bucketId, newVal));
+                    },
+                    child: const Text('Add')
+                  ),
+                )
+              ]
+            ),
+          ),
+        );
       }
 
 
