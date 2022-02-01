@@ -1,29 +1,22 @@
 import 'dart:convert';
-import 'package:async/async.dart';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:memoize/memoize.dart';
 
 final _dateFormat = DateFormat('y-MM-dd');
 
 class FiClient {
   static Uri _getUrl(String suffix) {
-    if (kDebugMode) {
-      if (Uri.base.toString().contains('localhost')) {
-        return Uri.parse('http://localhost:8080$suffix');
-      } else {
-        return Uri.parse('http://192.168.1.42:8080$suffix');
-      }
+    if (Uri.base.toString().contains('localhost')) {
+      return Uri.parse('http://localhost:8080$suffix');
     }
-
-    return Uri.parse('http://somewhere$suffix');
+    
+    return Uri.parse('http://192.168.1.179:8080$suffix');
   }
 
   void testCall() async {
