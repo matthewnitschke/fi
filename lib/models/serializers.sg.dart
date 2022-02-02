@@ -16,7 +16,6 @@ part 'serializers.sg.g.dart';
   BuiltMap,
   BuiltList,
   BucketGroup,
-  IncomeBucketValue,
   StaticBucketValue,
   TableBucketValue,
   TableBucketValueEntry,

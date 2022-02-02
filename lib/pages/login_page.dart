@@ -35,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: background,
         appBar: AppBar(title: const Text('Fi')),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),

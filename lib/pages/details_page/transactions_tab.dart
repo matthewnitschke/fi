@@ -1,10 +1,10 @@
 
-import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/bucket.sg.dart';
-import 'package:fi/models/transaction.sg.dart';
+import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/utils/redux_utils.dart';
-import 'package:fi/utils/transaction_card.dart';
+import 'package:fi/widgets/transaction_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TransactionsTab extends StatelessWidget {
   final Bucket bucket;
@@ -15,23 +15,18 @@ class TransactionsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return dispatchConnector((dispatch) {
-      return storeConnector<BuiltList<Transaction>>(
-        converter: (state) => (bucket.transactions
-          .map((transactionId) => state.transactions[transactionId]!)
-          .toList()
-          ..sort((a, b) => a.date.compareTo(b.date)))
-          .toBuiltList(), 
-        builder: (transactions) {
-          return ListView.builder(
-            itemCount: transactions.length,
-            itemBuilder: (ctx, index) {
-              final transaction = transactions[index];
-              return TransactionCard(
-                transaction: transaction,
-              );
+      return TransactionListView(
+        transactionIds: bucket.transactions,
+        getSlideActions: (transactionId) => [
+          SlidableAction(
+            onPressed: (ctx) {
+              dispatch(UnallocateTransactionAction(transactionId));
             },
-          );
-        },
+            label: 'Unallocate',
+            backgroundColor: Colors.yellow[300]!,
+            icon: Icons.assignment_return_outlined
+          )
+        ],
       );
     });
 

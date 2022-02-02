@@ -8,8 +8,6 @@ part of 'bucket_value.sg.dart';
 
 Serializer<StaticBucketValue> _$staticBucketValueSerializer =
     new _$StaticBucketValueSerializer();
-Serializer<IncomeBucketValue> _$incomeBucketValueSerializer =
-    new _$IncomeBucketValueSerializer();
 Serializer<TableBucketValue> _$tableBucketValueSerializer =
     new _$TableBucketValueSerializer();
 Serializer<TableBucketValueEntry> _$tableBucketValueEntrySerializer =
@@ -31,6 +29,9 @@ class _$StaticBucketValueSerializer
       'amount',
       serializers.serialize(object.amount,
           specifiedType: const FullType(double)),
+      'isIncome',
+      serializers.serialize(object.isIncome,
+          specifiedType: const FullType(bool)),
     ];
 
     return result;
@@ -52,47 +53,9 @@ class _$StaticBucketValueSerializer
           result.amount = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
           break;
-      }
-    }
-
-    return result.build();
-  }
-}
-
-class _$IncomeBucketValueSerializer
-    implements StructuredSerializer<IncomeBucketValue> {
-  @override
-  final Iterable<Type> types = const [IncomeBucketValue, _$IncomeBucketValue];
-  @override
-  final String wireName = 'IncomeBucketValue';
-
-  @override
-  Iterable<Object?> serialize(Serializers serializers, IncomeBucketValue object,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
-      'amount',
-      serializers.serialize(object.amount,
-          specifiedType: const FullType(double)),
-    ];
-
-    return result;
-  }
-
-  @override
-  IncomeBucketValue deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new IncomeBucketValueBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final Object? value = iterator.current;
-      switch (key) {
-        case 'amount':
-          result.amount = serializers.deserialize(value,
-              specifiedType: const FullType(double)) as double;
+        case 'isIncome':
+          result.isIncome = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
@@ -227,14 +190,19 @@ class _$ExtraBucketValueSerializer
 class _$StaticBucketValue extends StaticBucketValue {
   @override
   final double amount;
+  @override
+  final bool isIncome;
 
   factory _$StaticBucketValue(
           [void Function(StaticBucketValueBuilder)? updates]) =>
       (new StaticBucketValueBuilder()..update(updates)).build();
 
-  _$StaticBucketValue._({required this.amount}) : super._() {
+  _$StaticBucketValue._({required this.amount, required this.isIncome})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(
         amount, 'StaticBucketValue', 'amount');
+    BuiltValueNullFieldError.checkNotNull(
+        isIncome, 'StaticBucketValue', 'isIncome');
   }
 
   @override
@@ -248,18 +216,21 @@ class _$StaticBucketValue extends StaticBucketValue {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is StaticBucketValue && amount == other.amount;
+    return other is StaticBucketValue &&
+        amount == other.amount &&
+        isIncome == other.isIncome;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, amount.hashCode));
+    return $jf($jc($jc(0, amount.hashCode), isIncome.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('StaticBucketValue')
-          ..add('amount', amount))
+          ..add('amount', amount)
+          ..add('isIncome', isIncome))
         .toString();
   }
 }
@@ -272,6 +243,10 @@ class StaticBucketValueBuilder
   double? get amount => _$this._amount;
   set amount(double? amount) => _$this._amount = amount;
 
+  bool? _isIncome;
+  bool? get isIncome => _$this._isIncome;
+  set isIncome(bool? isIncome) => _$this._isIncome = isIncome;
+
   StaticBucketValueBuilder() {
     StaticBucketValue._initializeBuilder(this);
   }
@@ -280,6 +255,7 @@ class StaticBucketValueBuilder
     final $v = _$v;
     if ($v != null) {
       _amount = $v.amount;
+      _isIncome = $v.isIncome;
       _$v = null;
     }
     return this;
@@ -301,90 +277,9 @@ class StaticBucketValueBuilder
     final _$result = _$v ??
         new _$StaticBucketValue._(
             amount: BuiltValueNullFieldError.checkNotNull(
-                amount, 'StaticBucketValue', 'amount'));
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$IncomeBucketValue extends IncomeBucketValue {
-  @override
-  final double amount;
-
-  factory _$IncomeBucketValue(
-          [void Function(IncomeBucketValueBuilder)? updates]) =>
-      (new IncomeBucketValueBuilder()..update(updates)).build();
-
-  _$IncomeBucketValue._({required this.amount}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(
-        amount, 'IncomeBucketValue', 'amount');
-  }
-
-  @override
-  IncomeBucketValue rebuild(void Function(IncomeBucketValueBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  IncomeBucketValueBuilder toBuilder() =>
-      new IncomeBucketValueBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is IncomeBucketValue && amount == other.amount;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, amount.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('IncomeBucketValue')
-          ..add('amount', amount))
-        .toString();
-  }
-}
-
-class IncomeBucketValueBuilder
-    implements Builder<IncomeBucketValue, IncomeBucketValueBuilder> {
-  _$IncomeBucketValue? _$v;
-
-  double? _amount;
-  double? get amount => _$this._amount;
-  set amount(double? amount) => _$this._amount = amount;
-
-  IncomeBucketValueBuilder() {
-    IncomeBucketValue._initializeBuilder(this);
-  }
-
-  IncomeBucketValueBuilder get _$this {
-    final $v = _$v;
-    if ($v != null) {
-      _amount = $v.amount;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(IncomeBucketValue other) {
-    ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$IncomeBucketValue;
-  }
-
-  @override
-  void update(void Function(IncomeBucketValueBuilder)? updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$IncomeBucketValue build() {
-    final _$result = _$v ??
-        new _$IncomeBucketValue._(
-            amount: BuiltValueNullFieldError.checkNotNull(
-                amount, 'IncomeBucketValue', 'amount'));
+                amount, 'StaticBucketValue', 'amount'),
+            isIncome: BuiltValueNullFieldError.checkNotNull(
+                isIncome, 'StaticBucketValue', 'isIncome'));
     replace(_$result);
     return _$result;
   }

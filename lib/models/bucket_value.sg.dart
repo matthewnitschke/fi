@@ -5,7 +5,7 @@ import 'package:built_value/serializer.dart';
 part 'bucket_value.sg.g.dart';
 
 enum BucketValueType {
-  static, income, table, extra
+  static, table, extra
 }
 
 abstract class BucketValue {
@@ -18,28 +18,16 @@ abstract class StaticBucketValue implements BucketValue, Built<StaticBucketValue
 
   double get amount;
 
+  bool get isIncome;
+
   static void _initializeBuilder(StaticBucketValueBuilder b) => b
-    ..amount = 0;
+    ..amount = 0
+    ..isIncome = false;
 
   static Serializer<StaticBucketValue> get serializer => _$staticBucketValueSerializer;
 
   StaticBucketValue._();
   factory StaticBucketValue([void Function(StaticBucketValueBuilder) updates]) = _$StaticBucketValue;
-}
-
-abstract class IncomeBucketValue implements BucketValue, Built<IncomeBucketValue, IncomeBucketValueBuilder> {
-  @override
-  BucketValueType get type => BucketValueType.income;
-
-  double get amount;
-
-  static void _initializeBuilder(IncomeBucketValueBuilder b) => b
-    ..amount = 0;
-
-  static Serializer<IncomeBucketValue> get serializer => _$incomeBucketValueSerializer;
-
-  IncomeBucketValue._();
-  factory IncomeBucketValue([void Function(IncomeBucketValueBuilder) updates]) = _$IncomeBucketValue;
 }
 
 abstract class TableBucketValue implements BucketValue, Built<TableBucketValue, TableBucketValueBuilder> {

@@ -26,7 +26,6 @@ class BucketSelectorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF48220),
         title: TransactionCard(

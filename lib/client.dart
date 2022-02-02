@@ -4,7 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
-import 'package:http/browser_client.dart';
+// import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -17,12 +17,6 @@ class FiClient {
     }
     
     return Uri.parse('http://192.168.1.179:8080$suffix');
-  }
-
-  void testCall() async {
-    var response = await post(_getUrl('/transactions'), body: {'name': 'doodle', 'color': 'blue'});
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
   }
 
   static Future<bool> isAuthenticated() async {
@@ -71,7 +65,6 @@ class FiClient {
   static Future<BuiltMap<String, Transaction>> getTransactions(
     DateTime budgetMonth,
   ) async {
-
     final from = DateTime(budgetMonth.year, budgetMonth.month, 1);
     final to = DateTime(budgetMonth.year, budgetMonth.month, DateTime(budgetMonth.year, budgetMonth.month+1, 0).day); // 0 gets the last day in the month
 
@@ -103,9 +96,9 @@ class FiClient {
   static Map<String, String> headers = {};
   static final http.Client _clientRaw = http.Client();
   static http.Client get _client {
-    if (_clientRaw is BrowserClient) {
-      (_clientRaw as BrowserClient).withCredentials = true;
-    }
+    // if (_clientRaw is BrowserClient) {
+    //   (_clientRaw as BrowserClient).withCredentials = true;
+    // }
 
     return _clientRaw;
   }
@@ -128,13 +121,13 @@ class FiClient {
     return response;
   }
 
-  // static void updateCookie(http.Response response) {
-  //   String? rawCookie = response.headers['set-cookie'];
-  //   if (rawCookie != null) {
-  //     int index = rawCookie.indexOf(';');
-  //     headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-  //   }
-  // }
+  static void updateCookie(http.Response response) {
+    String? rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    }
+  }
 }
 
 class InternalServerException implements Exception {

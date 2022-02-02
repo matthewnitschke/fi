@@ -49,6 +49,10 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.robotoTextTheme(),
           primarySwatch: Colors.blue,
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark
+        ),
+        themeMode: ThemeMode.dark,
         home: const LoginPage(),
         navigatorKey: navigatorKey,
       )

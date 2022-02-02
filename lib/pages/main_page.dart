@@ -33,7 +33,6 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background,
       appBar: AppBar(
         title: const MonthSelector(),
         leading: storeConnector<int>(

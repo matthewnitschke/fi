@@ -14,3 +14,7 @@ extension CurrencyFormat on double {
     decimalDigits: decimalDigits,
   ).format(this);
 }
+
+extension StringCasingExtension on String {
+  String capitalize() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
+}

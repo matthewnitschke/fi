@@ -14,28 +14,26 @@ double bucketAmountSelector(AppState state, String bucketId) {
   double calculatedValue;
   if (bucketValue is StaticBucketValue) {
     calculatedValue = bucketValue.amount;
-  } else if (bucketValue is IncomeBucketValue) {
-    calculatedValue = bucketValue.amount;
   } else if (bucketValue is TableBucketValue) {
     calculatedValue = bucketValue.entries.fold<double>(0.0, (acc, entry) => acc + entry.amount);
   } else if (bucketValue is ExtraBucketValue) {
+    
+    final income = state.items.values
+      .whereType<Bucket>()
+      .map((bucket) => bucket.value)
+      .whereType<StaticBucketValue>()
+      .where((bucketVal) => bucketVal.isIncome)
+      .fold<double>(0.0, (acc, val) => acc + val.amount);
 
-    final income = state.items.keys.fold<double>(0.0, (acc, itemId) {
-      final item = state.items[itemId];
-      if (item is Bucket && item.value is IncomeBucketValue) {
-        acc += (item.value as IncomeBucketValue).amount;
-      }
-      return acc;
-    });
-
-    final expense = state.items.keys.fold<double>(0.0, (acc, itemId) {
-      final item = state.items[itemId];
-      if (item is Bucket && item.value is! IncomeBucketValue && item.value is! ExtraBucketValue) {
-        return acc + bucketAmountSelector(state, itemId);
-      }
-      return acc;
-    });
-
+    final expense = state.items.entries
+      .where((entry) => entry.value is Bucket)
+      .where((entry) { 
+        final bucketVal = (entry.value as Bucket).value;
+        if (bucketVal is ExtraBucketValue) return false;
+        if (bucketVal is StaticBucketValue && bucketVal.isIncome) return false;
+        return true;
+      })
+      .fold<double>(0.0, (acc, entry) => acc + bucketAmountSelector(state, entry.key));
 
     calculatedValue = income - expense;
   } else {
