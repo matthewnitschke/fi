@@ -45,12 +45,17 @@ class _LoginPageState extends State<LoginPage> {
                 const Text('Login', style: TextStyle(fontSize: 25)),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    
+                  ),
                 ),
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
                 ),
                 if (_errorText != null) Padding(
                   padding: const EdgeInsets.only(top: 20),

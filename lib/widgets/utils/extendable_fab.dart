@@ -81,6 +81,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
+          color: Theme.of(context).splashColor,
           child: InkWell(
             onTap: _toggle,
             child: Padding(

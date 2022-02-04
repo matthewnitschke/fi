@@ -20,7 +20,6 @@ import 'package:fi/widgets/month_selector.dart';
 import 'package:fi/widgets/root_add_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:fi/utils/colors.dart';
 
 import 'package:redux/redux.dart';
 

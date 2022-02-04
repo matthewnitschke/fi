@@ -29,7 +29,7 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (wrapWithCard) {
       return Card(
-        color: transaction.amount > 0 ? Colors.green[50] : null,
+        color: transaction.amount > 0 ? Colors.green[900] : null,
         child: slidableActions.isNotEmpty 
           ? Slidable(
             endActionPane: ActionPane(

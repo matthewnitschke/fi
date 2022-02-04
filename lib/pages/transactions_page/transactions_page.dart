@@ -36,7 +36,7 @@ class TransactionsPage extends StatelessWidget {
                       dispatch(IgnoreTransactionAction(transactionId));
                     },
                     label: 'Hide',
-                    backgroundColor: Colors.yellow[300]!,
+                    backgroundColor: Colors.yellow[600]!,
                     icon: Icons.not_interested_outlined
                   )
                 ],

@@ -4,7 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
-// import 'package:http/browser_client.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -93,16 +93,16 @@ class FiClient {
     );
   }
 
-  static Map<String, String> headers = {};
+ static Map<String, String> headers = {};
   static final http.Client _clientRaw = http.Client();
   static http.Client get _client {
-    // if (_clientRaw is BrowserClient) {
-    //   (_clientRaw as BrowserClient).withCredentials = true;
-    // }
+    if (_clientRaw is BrowserClient) {
+      (_clientRaw as BrowserClient).withCredentials = true;
+    }
 
     return _clientRaw;
   }
-  
+
   static Future<http.Response> get(Uri uri) async {
     final response = await _client.get(uri, headers: headers);
     // updateCookie(response);
@@ -121,13 +121,13 @@ class FiClient {
     return response;
   }
 
-  static void updateCookie(http.Response response) {
-    String? rawCookie = response.headers['set-cookie'];
-    if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-    }
-  }
+  // static void updateCookie(http.Response response) {
+  //   String? rawCookie = response.headers['set-cookie'];
+  //   if (rawCookie != null) {
+  //     int index = rawCookie.indexOf(';');
+  //     headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+  //   }
+  // }
 }
 
 class InternalServerException implements Exception {
