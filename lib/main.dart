@@ -45,12 +45,11 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         title: 'Fi',
-        theme: ThemeData(
-          textTheme: GoogleFonts.robotoTextTheme(),
-          primarySwatch: Colors.blue,
-        ),
         darkTheme: ThemeData(
-          brightness: Brightness.dark
+          brightness: Brightness.dark,
+          textTheme: GoogleFonts.latoTextTheme(
+            ThemeData(brightness: Brightness.dark).textTheme
+          ),
         ),
         themeMode: ThemeMode.dark,
         home: const LoginPage(),
