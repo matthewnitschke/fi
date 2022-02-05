@@ -116,8 +116,12 @@ class ItemsList extends StatelessWidget {
           }
     
           return ReorderableListView.builder(
-            itemCount: rootItemIds.length,
+            itemCount: rootItemIds.length + 1,
             itemBuilder: (context, index) {
+              if (rootItemIds.length == index) {
+                return const SizedBox(key: Key('Final Item'), height: 130);
+              }
+
               final itemId = rootItemIds[index];
               return StoreConnector<AppState, Item?>(
                 key: Key(itemId),

@@ -16,7 +16,7 @@ class RootCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 15),
       child: ConditionalParentWidget(
         condition: onTap != null,
         conditionalBuilder: (child) => InkWell(child: child, onTap: onTap),

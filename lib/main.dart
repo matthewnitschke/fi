@@ -48,7 +48,17 @@ class MyApp extends StatelessWidget {
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           textTheme: GoogleFonts.latoTextTheme(
-            ThemeData(brightness: Brightness.dark).textTheme
+            ThemeData(
+              brightness: Brightness.dark,
+              textTheme: TextTheme(
+                bodyText2: const TextStyle(fontSize: 15),
+                headline5: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: ThemeData(brightness: Brightness.dark).colorScheme.secondary
+                )
+              )
+            ).textTheme
           ),
         ),
         themeMode: ThemeMode.dark,

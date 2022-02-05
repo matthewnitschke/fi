@@ -4,11 +4,13 @@ import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
-import 'package:http/browser_client.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-final _dateFormat = DateFormat('y-MM-dd');
+import 'package:fi/browser_client_stub.dart'
+  if (kIsWeb) 'package:http/browser_client.dart';
+
 
 class FiClient {
   static Uri _getUrl(String suffix) {
@@ -68,11 +70,6 @@ class FiClient {
     String budgetId,
     // DateTime budgetMonth,
   ) async {
-    // final from = DateTime(budgetMonth.year, budgetMonth.month-1, 1);
-    // final to = DateTime(budgetMonth.year, budgetMonth.month, DateTime(budgetMonth.year, budgetMonth.month+1, 0).day); // 0 gets the last day in the month
-
-    // final resp = await get(_getUrl('/transactions?from=${_dateFormat.format(from)}&to=${_dateFormat.format(to)}'));
-
     final resp = await get(_getUrl('/transactions/$budgetId'));
     
     final encodedTransactions = json.decode(resp.body) as List<dynamic>;
@@ -80,9 +77,6 @@ class FiClient {
     return BuiltMap<String, Transaction>(
       Map.fromEntries(
         encodedTransactions.map((encodedTransaction) {
-          // var name = encodedTransaction['merchant'] as String;
-          // name = name.replaceAll(RegExp('\d'), '');
-
           return MapEntry(
             encodedTransaction['_id'] as String,
             Transaction((b) => b
@@ -112,7 +106,7 @@ class FiClient {
  static Map<String, String> headers = {};
   static final http.Client _clientRaw = http.Client();
   static http.Client get _client {
-    if (_clientRaw is BrowserClient) {
+    if (kIsWeb && _clientRaw is BrowserClient) {
       (_clientRaw as BrowserClient).withCredentials = true;
     }
 
@@ -120,30 +114,16 @@ class FiClient {
   }
 
   static Future<http.Response> get(Uri uri) async {
-    final response = await _client.get(uri, headers: headers);
-    // updateCookie(response);
-    return response;
+    return await _client.get(uri, headers: headers);
   }
 
   static Future<http.Response> post(Uri uri, { Map<String, Object> body = const {} }) async {
-    final response = await _client.post(uri, body: body, headers: headers);
-    // updateCookie(response);
-    return response;
+    return await _client.post(uri, body: body, headers: headers);
   }
 
   static Future<http.Response> delete(Uri uri) async {
-    final response = await _client.delete(uri, headers: headers);
-    // updateCookie(response);
-    return response;
+    return await _client.delete(uri, headers: headers);
   }
-
-  // static void updateCookie(http.Response response) {
-  //   String? rawCookie = response.headers['set-cookie'];
-  //   if (rawCookie != null) {
-  //     int index = rawCookie.indexOf(';');
-  //     headers['Cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-  //   }
-  // }
 }
 
 class InternalServerException implements Exception {

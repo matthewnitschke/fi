@@ -31,34 +31,36 @@ class BucketGroupView extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: FormBuilderTextField(
-                        name: 'label',
-                        initialValue: bucketGroup.label,
-                        onChanged: (newValue) {
-                          dispatch(SetItemLabelAction(bucketGroupId, newValue));
-                        },
-                        style: const TextStyle(
-                            color: blue, fontWeight: FontWeight.bold,),
-                        decoration:
-                            const InputDecoration.collapsed(hintText: 'Label'),
-                      ),
+                    FormBuilderTextField(
+                      name: 'label',
+                      initialValue: bucketGroup.label,
+                      onChanged: (newValue) {
+                        dispatch(SetItemLabelAction(bucketGroupId, newValue));
+                      },
+                      style: Theme.of(context).textTheme.headline5,
+                      // style: TextStyle(
+                      //   color: Theme.of(context).colorScheme.secondary, 
+                      //   fontWeight: FontWeight.bold,
+                      // ),
+                      decoration:
+                          const InputDecoration.collapsed(hintText: 'Label'),
                     ),
+                    const SizedBox(height: 23),
                     ...bucketGroup.itemIds.map((itemId) => Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: BucketView(
                         bucketId: itemId,
                         onTap: () => onBucketTap(itemId),
                       )
                     )),
+                    const SizedBox(height: 3),
                     Row(
                       children: [
                         TextButton(
                           onPressed: () {
                             dispatch(AddBucketAction(parentId: bucketGroupId));
                           },
-                          child: const Text('Add Item'),
+                          child: Text('Add Item', style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
                           style: TextButton.styleFrom(
                             minimumSize: Size.zero,
                             padding: EdgeInsets.zero,
