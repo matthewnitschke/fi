@@ -56,19 +56,24 @@ class FiClient {
 
     final serializedStore = json.decode(resp.body);
 
-    final deserializedState = serializers.deserializeWith(AppState.serializer, serializedStore);
+    final deserializedState = serializers.deserializeWith(AppState.serializer, serializedStore['storeData']);
     if (deserializedState == null) throw Exception('Deserialized app state is empty');
 
-    return deserializedState;
+    return deserializedState.rebuild((b) => b
+      ..budgetId = serializedStore['budgetId']
+    );
   }    
 
   static Future<BuiltMap<String, Transaction>> getTransactions(
-    DateTime budgetMonth,
+    String budgetId,
+    // DateTime budgetMonth,
   ) async {
-    final from = DateTime(budgetMonth.year, budgetMonth.month, 1);
-    final to = DateTime(budgetMonth.year, budgetMonth.month, DateTime(budgetMonth.year, budgetMonth.month+1, 0).day); // 0 gets the last day in the month
+    // final from = DateTime(budgetMonth.year, budgetMonth.month-1, 1);
+    // final to = DateTime(budgetMonth.year, budgetMonth.month, DateTime(budgetMonth.year, budgetMonth.month+1, 0).day); // 0 gets the last day in the month
 
-    final resp = await get(_getUrl('/transactions?from=${_dateFormat.format(from)}&to=${_dateFormat.format(to)}'));
+    // final resp = await get(_getUrl('/transactions?from=${_dateFormat.format(from)}&to=${_dateFormat.format(to)}'));
+
+    final resp = await get(_getUrl('/transactions/$budgetId'));
     
     final encodedTransactions = json.decode(resp.body) as List<dynamic>;
 
@@ -91,6 +96,17 @@ class FiClient {
         })
       )
     );
+  }
+
+  static Future<void> ignoreTransaction(String transactionId) async {
+    await post(_getUrl('/transactions/$transactionId/ignore'));
+  }
+
+  static Future<void> assignTransactionToBudget({
+    required String transactionId, 
+    required String budgetId,
+  }) async {
+    await post(_getUrl('/transactions/$transactionId/assign/$budgetId'));
   }
 
  static Map<String, String> headers = {};

@@ -12,7 +12,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   DateTime get selectedMonth;
 
   @BuiltValueField(serialize: false)
-  bool get isDraggingTransaction;
+  String? get budgetId;
 
   @BuiltValueField(serialize: false)
   String? get selectedItemId;
@@ -31,8 +31,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   static Serializer<AppState> get serializer => _$appStateSerializer;
 
   static void _initializeBuilder(AppStateBuilder b) => b
-    ..selectedMonth = DateTime.now()
-    ..isDraggingTransaction = false;
+    ..selectedMonth = DateTime.now();
 
   AppState._();
   factory AppState([void Function(AppStateBuilder) updates]) = _$AppState;

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:badges/badges.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:fi/client.dart';
-import 'package:fi/models/transaction.sg.dart';
 import 'package:fi/pages/details_page/details_page.dart';
 import 'package:fi/pages/transactions_page/transactions_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
@@ -69,17 +68,14 @@ class MainPage extends StatelessWidget {
   }
 
   Future<void> _handleInitBudget(Store<AppState> store) async {
-    late BuiltMap<String, Transaction> transactions;
-    late AppState appState;
     
-    await Future.wait([
-      FiClient.getTransactions(
-        store.state.selectedMonth,
-      ).then((resp) => transactions = resp),
-      FiClient.getBudget(
-        store.state.selectedMonth,
-      ).then((resp) => appState = resp)
-    ]);
+    final appState = await FiClient.getBudget(
+      store.state.selectedMonth,
+    );
+
+    final transactions = await FiClient.getTransactions(
+      appState.budgetId!,
+    );
 
     // on the off chance that transactionIds get borked, dont add phantom ones within items
     final filteredItems = appState.items.map((itemId, item) {
@@ -97,11 +93,11 @@ class MainPage extends StatelessWidget {
     });
 
     store.dispatch(LoadStateAction(
+      budgetId: appState.budgetId,
       items: filteredItems,
       rootItemIds: appState.rootItemIds,
       borrows: appState.borrows,
       transactions: transactions,
-      ignoredTransactions: appState.ignoredTransactions
     ));
   }
 }

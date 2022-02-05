@@ -4,7 +4,6 @@ import 'package:fi/pages/transactions_page/bucket_selector_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/redux/root/root.actions.dart';
 import 'package:fi/redux/selectors.dart';
-import 'package:fi/utils/colors.dart';
 import 'package:fi/utils/redux_utils.dart';
 import 'package:fi/widgets/transaction_list_view.dart';
 import 'package:flutter/material.dart';

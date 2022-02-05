@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:fi/client.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
+import 'package:fi/redux/items/items.actions.dart';
+import 'package:fi/redux/root/root.actions.dart';
 
 import 'package:redux/redux.dart';
 
@@ -14,6 +16,20 @@ Middleware<AppState> settingsSaveMiddleware() => (
   dynamic action, 
   NextDispatcher next,
 ) {
+
+  if (action is IgnoreTransactionAction) {
+    unawaited(FiClient.ignoreTransaction(action.transactionId));
+    next(action);
+    return;
+  }
+
+  if (action is AllocateTransactionAction) {
+    unawaited(FiClient.assignTransactionToBudget(
+      transactionId: action.transactionId,
+      budgetId: store.state.budgetId!,
+    ));
+  }
+
   final before = store.state;
 
   next(action);
@@ -27,12 +43,13 @@ Middleware<AppState> settingsSaveMiddleware() => (
       FiClient.updateBudget(store.state.selectedMonth, serializedStore);
     });
   }
+  
+
 };
 
 bool _haveSettingsChanged(AppState a, AppState b) {
   if (a.items != b.items) return true;
   if (a.transactions != b.transactions) return true;
-  if (a.ignoredTransactions != b.ignoredTransactions) return true;
   if (a.borrows != b.borrows) return true;
   if (a.rootItemIds != b.rootItemIds) return true;
 

@@ -83,7 +83,7 @@ class _$AppState extends AppState {
   @override
   final DateTime selectedMonth;
   @override
-  final bool isDraggingTransaction;
+  final String? budgetId;
   @override
   final String? selectedItemId;
   @override
@@ -102,7 +102,7 @@ class _$AppState extends AppState {
 
   _$AppState._(
       {required this.selectedMonth,
-      required this.isDraggingTransaction,
+      this.budgetId,
       this.selectedItemId,
       required this.items,
       required this.rootItemIds,
@@ -112,8 +112,6 @@ class _$AppState extends AppState {
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
         selectedMonth, 'AppState', 'selectedMonth');
-    BuiltValueNullFieldError.checkNotNull(
-        isDraggingTransaction, 'AppState', 'isDraggingTransaction');
     BuiltValueNullFieldError.checkNotNull(items, 'AppState', 'items');
     BuiltValueNullFieldError.checkNotNull(
         rootItemIds, 'AppState', 'rootItemIds');
@@ -136,7 +134,7 @@ class _$AppState extends AppState {
     if (identical(other, this)) return true;
     return other is AppState &&
         selectedMonth == other.selectedMonth &&
-        isDraggingTransaction == other.isDraggingTransaction &&
+        budgetId == other.budgetId &&
         selectedItemId == other.selectedItemId &&
         items == other.items &&
         rootItemIds == other.rootItemIds &&
@@ -154,7 +152,7 @@ class _$AppState extends AppState {
                     $jc(
                         $jc(
                             $jc($jc(0, selectedMonth.hashCode),
-                                isDraggingTransaction.hashCode),
+                                budgetId.hashCode),
                             selectedItemId.hashCode),
                         items.hashCode),
                     rootItemIds.hashCode),
@@ -167,7 +165,7 @@ class _$AppState extends AppState {
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
           ..add('selectedMonth', selectedMonth)
-          ..add('isDraggingTransaction', isDraggingTransaction)
+          ..add('budgetId', budgetId)
           ..add('selectedItemId', selectedItemId)
           ..add('items', items)
           ..add('rootItemIds', rootItemIds)
@@ -186,10 +184,9 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   set selectedMonth(DateTime? selectedMonth) =>
       _$this._selectedMonth = selectedMonth;
 
-  bool? _isDraggingTransaction;
-  bool? get isDraggingTransaction => _$this._isDraggingTransaction;
-  set isDraggingTransaction(bool? isDraggingTransaction) =>
-      _$this._isDraggingTransaction = isDraggingTransaction;
+  String? _budgetId;
+  String? get budgetId => _$this._budgetId;
+  set budgetId(String? budgetId) => _$this._budgetId = budgetId;
 
   String? _selectedItemId;
   String? get selectedItemId => _$this._selectedItemId;
@@ -232,7 +229,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     final $v = _$v;
     if ($v != null) {
       _selectedMonth = $v.selectedMonth;
-      _isDraggingTransaction = $v.isDraggingTransaction;
+      _budgetId = $v.budgetId;
       _selectedItemId = $v.selectedItemId;
       _items = $v.items.toBuilder();
       _rootItemIds = $v.rootItemIds.toBuilder();
@@ -263,8 +260,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
           new _$AppState._(
               selectedMonth: BuiltValueNullFieldError.checkNotNull(
                   selectedMonth, 'AppState', 'selectedMonth'),
-              isDraggingTransaction: BuiltValueNullFieldError.checkNotNull(
-                  isDraggingTransaction, 'AppState', 'isDraggingTransaction'),
+              budgetId: budgetId,
               selectedItemId: selectedItemId,
               items: items.build(),
               rootItemIds: rootItemIds.build(),

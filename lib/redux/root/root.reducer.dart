@@ -11,18 +11,17 @@ Reducer<AppState> get rootReducer => combineReducers([
   TypedReducer<AppState, AddBucketAction>(_onAddBucket),
   TypedReducer<AppState, DeleteItemAction>(_onDeleteItem),
   TypedReducer<AppState, SelectItemAction>(_onSelectItem),
-  TypedReducer<AppState, SetIsDraggingTransactionAction>(_onSetIsDraggingTransaction),
   TypedReducer<AppState, IgnoreTransactionAction>(_onIgnoreTransaction),
   TypedReducer<AppState, ReorderItemAction>(_onReorderItem),
 ]);
 
 AppState _onLoadState(AppState state, LoadStateAction action) {
   return state.rebuild((b) => b
+    ..budgetId = action.budgetId
     ..items = action.items.toBuilder()
     ..rootItemIds = action.rootItemIds.toBuilder()
     ..borrows = action.borrows.toBuilder()
     ..transactions = action.transactions.toBuilder()
-    ..ignoredTransactions = action.ignoredTransactions.toBuilder()
   );
 }
 
@@ -85,15 +84,10 @@ AppState _onSelectItem(AppState state, SelectItemAction action) {
   );
 }
 
-AppState _onSetIsDraggingTransaction(AppState state, SetIsDraggingTransactionAction action) {
-  return state.rebuild((b) => b
-    ..isDraggingTransaction = action.isDragging
-  );
-}
-
 AppState _onIgnoreTransaction(AppState state, IgnoreTransactionAction action) {
+  // optimisticly update transaction
   return state.rebuild((b) => b
-    ..ignoredTransactions.add(action.transactionId)
+    ..transactions.removeWhere((transactionId, _) => transactionId == action.transactionId)
   );
 }
 
