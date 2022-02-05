@@ -1,10 +1,11 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/transaction.sg.dart';
-import 'package:fi/pages/transactions_page/bucket_selector_page.dart';
+import 'package:fi/pages/bucket_selector_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
 import 'package:fi/redux/root/root.actions.dart';
 import 'package:fi/redux/selectors.dart';
 import 'package:fi/utils/redux_utils.dart';
+import 'package:fi/utils/transaction_card.dart';
 import 'package:fi/widgets/transaction_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -63,7 +64,11 @@ class TransactionsPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BucketSelectorPage(
-        transaction: transaction,
+        title: TransactionCard(
+          wrapWithCard: false,
+          transaction: transaction,
+          textColor: Colors.white
+        ),
         onBucketSelected: onBucketSelected,
       )),
     );

@@ -2,22 +2,32 @@ import 'package:flutter/material.dart';
 
 class AutoFocusTextField extends StatefulWidget {
   String? initialValue;
-  void Function(String) onChanged;
+  void Function(String)? onChanged;
   InputDecoration? decoration;
   TextInputType? keyboardType;
 
-  AutoFocusTextField({ Key? key, this.initialValue, this.keyboardType, this.decoration, required this.onChanged  }) : super(key: key);
+  TextEditingController? controller;
+
+  AutoFocusTextField({ 
+    Key? key, 
+    this.initialValue, 
+    this.keyboardType, 
+    this.decoration, 
+    this.onChanged,
+    this.controller
+  }) : super(key: key);
 
   @override
   _AutoFocusTextFieldState createState() => _AutoFocusTextFieldState();
 }
 
 class _AutoFocusTextFieldState extends State<AutoFocusTextField> {
-  final _controller = TextEditingController();
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = widget.controller ?? TextEditingController();
     _controller.text = widget.initialValue ?? '';
   }
 

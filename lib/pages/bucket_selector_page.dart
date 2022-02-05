@@ -4,23 +4,21 @@ import 'package:built_collection/built_collection.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/bucket.sg.dart';
 import 'package:fi/models/item.sg.dart';
-import 'package:fi/models/transaction.sg.dart';
-import 'package:fi/utils/colors.dart';
 import 'package:fi/utils/redux_utils.dart';
-import 'package:fi/utils/transaction_card.dart';
 import 'package:fi/widgets/bucket_group_view.dart';
 import 'package:fi/widgets/bucket_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 class BucketSelectorPage extends StatelessWidget {
-  final Transaction transaction;
   final Function(String) onBucketSelected;
+
+  final Widget? title;
   
   const BucketSelectorPage({ 
     Key? key,
-    required this.transaction,
     required this.onBucketSelected,
+    this.title,
   }) : super(key: key);
 
   @override
@@ -28,11 +26,7 @@ class BucketSelectorPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF48220),
-        title: TransactionCard(
-          wrapWithCard: false,
-          transaction: transaction,
-          textColor: Colors.white
-        ),
+        title: title,
       ),
       body: storeConnector<BuiltList<String>>(
         converter: (state) => state.rootItemIds, 

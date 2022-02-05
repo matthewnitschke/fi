@@ -1,3 +1,4 @@
+import 'package:fi/pages/details_page/borrows_tab.dart';
 import 'package:fi/pages/details_page/details_tab.dart';
 import 'package:fi/pages/details_page/transactions_tab.dart';
 import 'package:fi/models/app_state.sg.dart';
@@ -50,7 +51,7 @@ class DetailsPage extends StatelessWidget {
                   children: [
                     DetailsTab(bucket, bucketId),
                     TransactionsTab(bucket, bucketId),
-                    const Text('Borrows'),
+                    BorrowsTab(bucket, bucketId),
                   ],
                 ),
               )
