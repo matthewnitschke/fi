@@ -4,6 +4,7 @@ import 'package:fi/models/borrow.sg.dart';
 import 'package:fi/models/bucket.sg.dart';
 import 'package:fi/models/item.sg.dart';
 import 'package:fi/pages/bucket_selector_page.dart';
+import 'package:fi/pages/details_page/borrows_tab/borrows_list.dart';
 import 'package:fi/redux/borrows/borrows.actions.dart';
 import 'package:fi/redux/selectors.dart';
 import 'package:fi/utils/redux_utils.dart';
@@ -24,109 +25,36 @@ class _BorrowsTabState extends State<BorrowsTab> {
   @override
   Widget build(BuildContext context) {
     return dispatchConnector((dispatch) =>
-      storeConnector<BuiltMap<String, Item>>(
-        converter: (store) => store.items,
-        builder: (items) {
-          return storeConnector<BuiltMap<String, Borrow>>(
-            converter: (state) => state.borrows,
-            builder: (borrows) {
-              final bucketBorrows = borrows.entries
-                .where((ent) => ent.value.toId == widget.bucketId || ent.value.fromId == widget.bucketId);
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+       Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              BorrowsList(bucketId: widget.bucketId),
+              
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (bucketBorrows.isNotEmpty) Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'Current Borrows',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          DataTable(
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Name',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                              DataColumn(
-                                numeric: true,
-                                label: Text(
-                                  'Amount',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  '',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ],
-                            rows: bucketBorrows.map((entry) {
-                              final isOutgoingMoney = entry.value.fromId == widget.bucketId;
-                              return DataRow(
-                                cells: [
-                                  DataCell(Text(items[entry.value.fromId]!.label ?? 'label')),
-
-                                  DataCell(Text(
-                                    '${isOutgoingMoney ? '-' : ''}\$${entry.value.amount.toStringAsFixed(2)}',
-                                    style: TextStyle(color: isOutgoingMoney ? Colors.red : Colors.green),
-                                  )),
-
-                                  DataCell(
-                                    IconButton(
-                                      onPressed: () => dispatch(DeleteBorrowAction(entry.key)),
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        size: 17
-                                      )
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    )
-                  ),
-                  
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      OutlinedButton(
-                        child: const Text('Create'),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (ctx) {
-                              return _CreateBorrowModal(
-                                bucketId: widget.bucketId,
-                                onCreateBorrow: (fromId, amount) {
-                                  dispatch(AddBorrowAction(fromId, widget.bucketId, amount));
-                                },
-                              );
+                  OutlinedButton(
+                    child: const Text('Create'),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (ctx) {
+                          return _CreateBorrowModal(
+                            bucketId: widget.bucketId,
+                            onCreateBorrow: (fromId, amount) {
+                              dispatch(AddBorrowAction(fromId, widget.bucketId, amount));
                             },
                           );
                         },
-                      ),
-                    ],
-                  )
+                      );
+                    },
+                  ),
                 ],
-              );
-            }
-          );
-          
-        }
-      ),
-    );
+              )
+            ],
+          )
 
+    );
   }
 }
 

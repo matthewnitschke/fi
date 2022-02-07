@@ -27,6 +27,7 @@ dependencies:
   group_list_view: ^1.1.1
   flutter_slidable: ^1.2.0
   toggle_switch: ^1.4.0
+  provider_for_redux: ^4.0.0
 
 dev_dependencies:
   flutter_test:
