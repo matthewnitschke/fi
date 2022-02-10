@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fi/client.dart';
+import 'package:fi/client/client_interface.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/redux/items/items.actions.dart';
@@ -11,20 +11,20 @@ import 'package:redux/redux.dart';
 
 Timer? debouncer;
 
-Middleware<AppState> settingsSaveMiddleware() => (
+Middleware<AppState> settingsSaveMiddleware(FiClientInterface client) => (
   Store<AppState> store, 
   dynamic action, 
   NextDispatcher next,
 ) {
 
   if (action is IgnoreTransactionAction) {
-    unawaited(FiClient.ignoreTransaction(action.transactionId));
+    unawaited(client.ignoreTransaction(action.transactionId));
     next(action);
     return;
   }
 
   if (action is AllocateTransactionAction) {
-    unawaited(FiClient.assignTransactionToBudget(
+    unawaited(client.assignTransactionToBudget(
       transactionId: action.transactionId,
       budgetId: store.state.budgetId!,
     ));
@@ -40,7 +40,7 @@ Middleware<AppState> settingsSaveMiddleware() => (
     debouncer?.cancel();
     debouncer = Timer(const Duration(seconds: 2), () {
       final serializedStore = json.encode(serializers.serialize(store.state));
-      FiClient.updateBudget(store.state.selectedMonth, serializedStore);
+      client.updateBudget(store.state.selectedMonth, serializedStore);
     });
   }
   

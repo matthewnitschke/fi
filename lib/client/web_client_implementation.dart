@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:fi/client/client_interface.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/models/serializers.sg.dart';
 import 'package:fi/models/transaction.sg.dart';
@@ -8,12 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import 'package:fi/browser_client_stub.dart'
-  if (kIsWeb) 'package:http/browser_client.dart';
+import 'package:http/browser_client.dart';
 
-
-class FiClient {
-  static Uri _getUrl(String suffix) {
+class FiClient extends FiClientInterface {
+  Uri _getUrl(String suffix) {
     if (Uri.base.toString().contains('localhost')) {
       return Uri.parse('http://localhost:8080$suffix');
     }
@@ -21,7 +20,8 @@ class FiClient {
     return Uri.parse('http://192.168.1.179:8080$suffix');
   }
 
-  static Future<bool> isAuthenticated() async {
+  @override
+  Future<bool> isAuthenticated() async {
     try {
       final resp = await post(_getUrl('/transactions'));
       return resp.statusCode != 401;
@@ -30,7 +30,8 @@ class FiClient {
     }
   }
 
-  static Future<void> authenticate(String email, String password) async {
+  @override
+  Future<void> authenticate(String email, String password) async {
     if (!kIsWeb) return;
     
     final resp = await post(_getUrl('/login/authenticate'), body: {'email': email, 'password': password});
@@ -41,14 +42,16 @@ class FiClient {
     }
   }
 
-  static Future<void> updateBudget(DateTime budgetMonth, String serializedStore) async {
+  @override
+  Future<void> updateBudget(DateTime budgetMonth, String serializedStore) async {
     final monthStr = DateFormat.M().format(budgetMonth);
     final yearStr = DateFormat.y().format(budgetMonth);
 
     await post(_getUrl('/budget/$yearStr/$monthStr'), body: { 'serializedStore': serializedStore });
   }
 
-  static Future<AppState> getBudget(DateTime budgetMonth) async {
+  @override
+  Future<AppState> getBudget(DateTime budgetMonth) async {
     final monthStr = DateFormat.M().format(budgetMonth);
     final yearStr = DateFormat.y().format(budgetMonth);
 
@@ -68,7 +71,8 @@ class FiClient {
     );
   }    
 
-  static Future<BuiltMap<String, Transaction>> getTransactions(
+  @override
+  Future<BuiltMap<String, Transaction>> getTransactions(
     String budgetId,
   ) async {
     final resp = await get(_getUrl('/transactions/$budgetId'));
@@ -93,43 +97,39 @@ class FiClient {
     );
   }
 
-  static Future<void> ignoreTransaction(String transactionId) async {
+  @override
+  Future<void> ignoreTransaction(String transactionId) async {
     await post(_getUrl('/transactions/$transactionId/ignore'));
   }
 
-  static Future<void> assignTransactionToBudget({
+  @override
+  Future<void> assignTransactionToBudget({
     required String transactionId, 
     required String budgetId,
   }) async {
     await post(_getUrl('/transactions/$transactionId/assign/$budgetId'));
   }
 
- static Map<String, String> headers = {};
-  static final http.Client _clientRaw = http.Client();
-  static http.Client get _client {
-    if (kIsWeb && _clientRaw is BrowserClient) {
+  Map<String, String> headers = {};
+  final http.Client _clientRaw = http.Client();
+  http.Client get _client {
+    if (_clientRaw is BrowserClient) {
       (_clientRaw as BrowserClient).withCredentials = true;
     }
 
     return _clientRaw;
   }
 
-  static Future<http.Response> get(Uri uri) async {
+  Future<http.Response> get(Uri uri) async {
     return await _client.get(uri, headers: headers);
   }
 
-  static Future<http.Response> post(Uri uri, { Map<String, Object> body = const {} }) async {
+  Future<http.Response> post(Uri uri, { Map<String, Object> body = const {} }) async {
     return await _client.post(uri, body: body, headers: headers);
   }
 
-  static Future<http.Response> delete(Uri uri) async {
+  Future<http.Response> delete(Uri uri) async {
     return await _client.delete(uri, headers: headers);
   }
 }
 
-class InternalServerException implements Exception {
-  final String message;
-  InternalServerException(this.message);
-}
-
-class NotAuthenticatedException implements Exception { }

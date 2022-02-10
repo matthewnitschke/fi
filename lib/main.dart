@@ -1,3 +1,4 @@
+import 'package:fi/client/client.dart';
 import 'package:fi/models/app_state.sg.dart';
 import 'package:fi/pages/login_page.dart';
 import 'package:fi/redux/borrows/borrows.reducer.dart';
@@ -13,6 +14,8 @@ import 'package:redux/redux.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
+  final client = getClient();
+
   final store = Store<AppState>(
     (state, action) {
       final rootState = rootReducer(state, action);
@@ -21,7 +24,7 @@ void main() {
         ..borrows = borrowsReducer(rootState.borrows, action).toBuilder());
     },
     initialState: AppState(),
-    middleware: [settingsSaveMiddleware()]
+    middleware: [settingsSaveMiddleware(client)]
   );
 
   // debugPaintSizeEnabled=true;

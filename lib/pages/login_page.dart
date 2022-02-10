@@ -1,6 +1,6 @@
-import 'package:fi/client.dart';
+import 'package:fi/client/client.dart';
+import 'package:fi/client/client_interface.dart';
 import 'package:fi/pages/main_page.dart';
-import 'package:fi/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,11 +17,13 @@ class _LoginPageState extends State<LoginPage> {
 
   String? _errorText;
 
+  final client = getClient();
+
   @override
   void initState() {
     super.initState();
 
-    FiClient.isAuthenticated().then((isAuthed) {
+    client.isAuthenticated().then((isAuthed) {
       if (isAuthed) {
         _navigateToMainPage();
       } else {
@@ -76,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _authenticate() async {
     try {
-      await FiClient.authenticate(_emailController.text, _passwordController.text);
+      await client.authenticate(_emailController.text, _passwordController.text);
       _navigateToMainPage();
     } on InternalServerException catch(e) {
       setState(() => _errorText = e.message);
@@ -86,6 +88,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigateToMainPage() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainPage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainPage()));
   }
 }

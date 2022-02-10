@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:badges/badges.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:fi/client.dart';
+import 'package:fi/client/client.dart';
 import 'package:fi/pages/details_page/details_page.dart';
 import 'package:fi/pages/transactions_page/transactions_page.dart';
 import 'package:fi/redux/items/items.actions.dart';
@@ -24,7 +24,9 @@ import 'package:redux/redux.dart';
 
 
 class MainPage extends StatelessWidget {
-  const MainPage({
+  final client = getClient();
+
+  MainPage({
     Key? key,
   }) : super(key: key);
 
@@ -69,11 +71,11 @@ class MainPage extends StatelessWidget {
 
   Future<void> _handleInitBudget(Store<AppState> store) async {
     
-    final appState = await FiClient.getBudget(
+    final appState = await client.getBudget(
       store.state.selectedMonth,
     );
 
-    final transactions = await FiClient.getTransactions(
+    final transactions = await client.getTransactions(
       appState.budgetId!,
     );
 
