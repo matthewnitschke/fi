@@ -33,3 +33,8 @@ StoreConnector storeConnectorWithCtx<T>({
     builder: builder,
   );
 }
+
+T useSelector<T>(BuildContext context, T Function(AppState) converter) =>  converter(StoreProvider.of<AppState>(context).state);
+
+
+DispatchFunction useDispatch<T>(BuildContext context) => StoreProvider.of<AppState>(context).dispatch;

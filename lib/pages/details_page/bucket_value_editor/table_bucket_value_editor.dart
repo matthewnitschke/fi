@@ -17,82 +17,81 @@ class TableBucketValueEditor  extends StatelessWidget {
 
     @override
   Widget build(BuildContext context) {
+    final dispatch = useDispatch(context);
 
-    return dispatchConnector((dispatch) =>
-      Card(
-          margin: const EdgeInsets.only(top: 10),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text('Entries', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-                ...bucketValue.entries.map((entry) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: AutoFocusTextField(
-                          decoration: const InputDecoration(labelText: 'Label'),
-                          initialValue: entry.label,
-                          onChanged: (inputVal) {
-                            final newVal = bucketValue.rebuild((b) => b
-                              ..entries = bucketValue.entries.map((e) {
-                                if (e == entry) {
-                                  return e.rebuild((eb) => eb
-                                    ..label = inputVal
-                                  );
-                                }
-                                return e;
-                              }).toBuiltList().toBuilder()
-                            );
-                            dispatch(SetBucketValueAction(bucketId, newVal));
-                          }
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: AutoFocusTextField(
-                          decoration: const InputDecoration(labelText: 'Amount'),
-                          keyboardType: TextInputType.number,
-                          initialValue: entry.amount.toStringAsFixed(2),
-                          onChanged: (inputVal) {
-                            final newVal = bucketValue.rebuild((b) => b
-                              ..entries = bucketValue.entries.map((e) {
-                                if (e == entry) {
-                                  return e.rebuild((eb) => eb
-                                    ..amount = double.parse(
-                                      inputVal.isNotEmpty == true ? inputVal : '0'
-                                    )
-                                  );
-                                }
-                                return e;
-                              }).toBuiltList().toBuilder()
-                            );
-                            dispatch(SetBucketValueAction(bucketId, newVal));
-                          }
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: OutlinedButton(
-                    onPressed: () {
-                      final newVal = bucketValue.rebuild((b) => b
-                        ..entries.add(TableBucketValueEntry())
-                      );
-        
-                      dispatch(SetBucketValueAction(bucketId, newVal));
-                    },
-                    child: const Text('Add')
+    return Card(
+      margin: const EdgeInsets.only(top: 10),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Entries', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+            ...bucketValue.entries.map((entry) {
+              return Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: AutoFocusTextField(
+                      decoration: const InputDecoration(labelText: 'Label'),
+                      initialValue: entry.label,
+                      onChanged: (inputVal) {
+                        final newVal = bucketValue.rebuild((b) => b
+                          ..entries = bucketValue.entries.map((e) {
+                            if (e == entry) {
+                              return e.rebuild((eb) => eb
+                                ..label = inputVal
+                              );
+                            }
+                            return e;
+                          }).toBuiltList().toBuilder()
+                        );
+                        dispatch(SetBucketValueAction(bucketId, newVal));
+                      }
+                    ),
                   ),
-                )
-              ]
-            ),
-          ),
-        )
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AutoFocusTextField(
+                      decoration: const InputDecoration(labelText: 'Amount'),
+                      keyboardType: TextInputType.number,
+                      initialValue: entry.amount.toStringAsFixed(2),
+                      onChanged: (inputVal) {
+                        final newVal = bucketValue.rebuild((b) => b
+                          ..entries = bucketValue.entries.map((e) {
+                            if (e == entry) {
+                              return e.rebuild((eb) => eb
+                                ..amount = double.parse(
+                                  inputVal.isNotEmpty == true ? inputVal : '0'
+                                )
+                              );
+                            }
+                            return e;
+                          }).toBuiltList().toBuilder()
+                        );
+                        dispatch(SetBucketValueAction(bucketId, newVal));
+                      }
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: OutlinedButton(
+                onPressed: () {
+                  final newVal = bucketValue.rebuild((b) => b
+                    ..entries.add(TableBucketValueEntry())
+                  );
+    
+                  dispatch(SetBucketValueAction(bucketId, newVal));
+                },
+                child: const Text('Add')
+              ),
+            )
+          ]
+        ),
+      ),
     );
   }
 }

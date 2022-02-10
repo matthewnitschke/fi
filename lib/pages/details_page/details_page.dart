@@ -19,47 +19,43 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return dispatchConnector((dispatch) => 
-      StoreConnector<AppState, Bucket>(
-        converter: (store) => store.state.items[bucketId] as Bucket,
-        builder: (ctx, bucket) {
-          return DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(bucket.label ?? 'Label'),
-                bottom: const TabBar(
-                  tabs: [
-                    Tab(text: 'Details'),
-                    Tab(text: 'Transactions'),
-                    Tab(text: 'Borrows')
-                  ]
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      dispatch(DeleteItemAction(bucketId));
-                      Navigator.pop(ctx);
-                    }, 
-                    icon: const Icon(Icons.delete),
-                  )
-                ],
-              ),
-              body: Container(
-                padding: const EdgeInsets.all(10),
-                child: TabBarView(
-                  children: [
-                    DetailsTab(bucket, bucketId),
-                    TransactionsTab(bucket, bucketId),
-                    BorrowsTab(bucket, bucketId),
-                  ],
-                ),
-              )
-              // floatingActionButton: const RootAddButton(),
-            ),
-          );
-        },
+    final bucket = useSelector(context, (state) => state.items[bucketId] as Bucket);
+    final dispatch = useDispatch(context);
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(bucket.label ?? 'Label'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Details'),
+              Tab(text: 'Transactions'),
+              Tab(text: 'Borrows')
+            ]
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                dispatch(DeleteItemAction(bucketId));
+                Navigator.pop(context);
+              }, 
+              icon: const Icon(Icons.delete),
+            )
+          ],
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          child: TabBarView(
+            children: [
+              DetailsTab(bucket, bucketId),
+              TransactionsTab(bucket, bucketId),
+              BorrowsTab(bucket, bucketId),
+            ],
+          ),
+        )
+        // floatingActionButton: const RootAddButton(),
       ),
-    );    
+    );
   }
 }

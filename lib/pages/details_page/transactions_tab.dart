@@ -14,21 +14,20 @@ class TransactionsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return dispatchConnector((dispatch) {
-      return TransactionListView(
-        transactionIds: bucket.transactions,
-        getSlideActions: (transactionId) => [
-          SlidableAction(
-            onPressed: (ctx) {
-              dispatch(UnallocateTransactionAction(transactionId));
-            },
-            label: 'Unallocate',
-            backgroundColor: Colors.yellow[300]!,
-            icon: Icons.assignment_return_outlined
-          )
-        ],
-      );
-    });
+    final dispatch = useDispatch(context);
 
+    return TransactionListView(
+      transactionIds: bucket.transactions,
+      getSlideActions: (transactionId) => [
+        SlidableAction(
+          onPressed: (ctx) {
+            dispatch(UnallocateTransactionAction(transactionId));
+          },
+          label: 'Unallocate',
+          backgroundColor: Colors.yellow[300]!,
+          icon: Icons.assignment_return_outlined
+        )
+      ],
+    );
   }
 }

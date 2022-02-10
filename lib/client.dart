@@ -31,6 +31,8 @@ class FiClient {
   }
 
   static Future<void> authenticate(String email, String password) async {
+    if (!kIsWeb) return;
+    
     final resp = await post(_getUrl('/login/authenticate'), body: {'email': email, 'password': password});
 
     if (resp.statusCode >= 400) {
@@ -68,7 +70,6 @@ class FiClient {
 
   static Future<BuiltMap<String, Transaction>> getTransactions(
     String budgetId,
-    // DateTime budgetMonth,
   ) async {
     final resp = await get(_getUrl('/transactions/$budgetId'));
     
