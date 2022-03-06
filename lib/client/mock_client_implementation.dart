@@ -13,11 +13,21 @@ class FiClient extends FiClientInterface {
   Future<void> authenticate(String email, String password) async { }
 
   @override
-  Future<AppState> getBudget(DateTime budgetMonth) async => AppState();
+  Future<AppState> getBudget(DateTime budgetMonth) async => AppState((b) => b
+    ..budgetId = 'budgetId'
+  );
 
   @override
   Future<BuiltMap<String, Transaction>> getTransactions(String budgetId) async {
-    return BuiltMap<String,Transaction>();
+    return BuiltMap<String,Transaction>({
+      'a': Transaction((b) => b
+        ..id = 'a'
+        ..amount = 1
+        ..merchant = 'Apple'
+        ..name = 'Some Purchase'
+        ..date = DateTime.now()
+      )
+    });
   }
 
   @override
